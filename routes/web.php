@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Kategoricontroller;
+use App\Http\Controllers\LevelController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\UserController;
@@ -28,3 +30,7 @@ Route::get('/sales', [SalesController::class, 'sales'])->name('sales.index');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/house', [HomeController::class, 'index'])->name('house');
 Route::get('/user', [UserController::class, 'index'])->name('users.index');
+
+Route::get('/level', [LevelController::class, 'index']);
+Route::get('/kategori', [Kategoricontroller::class, 'index']);
+
