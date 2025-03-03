@@ -10,15 +10,24 @@ class UserKontroller extends Controller
 {
     public function index()
     {
-        $user = UserModel::firstOrNew(
-            [
-                'username' => 'manager33',
-                'nama' => 'Manager tiga tiga',
-                'password' => Hash::make('123456'),
-                'level_id' => 2,
-            ]
-        );
+        $user = UserModel::create([
+            'username' => 'manager14',
+            'nama' => 'Manager11',
+            'password' => Hash::make('12345'),
+            'level_id' => 2,
+        ]);
+
+        $user->username = 'manager13';
+
         $user->save();
+
+        $user->wasChanged();
+        $user->wasChanged('username');
+        $user->wasChanged(['username', 'level_id']);
+        $user->wasChanged('nama');
+        $user->wasChanged(['nama', 'username']);
+        dd($user->wasChanged(['nama', 'username']));
+
         return view('user', ['data' => $user]);
 
     }
