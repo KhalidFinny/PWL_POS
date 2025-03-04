@@ -37,3 +37,8 @@ Route::get('/level', [LevelController::class, 'index']);
 Route::get('/kategori', [Kategoricontroller::class, 'index']);
 Route::get('/user', [UserKontroller::class, 'index']);
 
+Route::get('/user/tambah', [UserKontroller::class, 'tambah']);
+Route::post('/user/tambah_simpan', [UserKontroller::class, 'tambahSimpan']);
+Route::get('/user/ubah/{id}', [UserKontroller::class, 'ubah']);
+Route::put('/user/ubah_simpan/{id}', [UserKontroller::class, 'ubah_simpan']);
+Route::get('/user/hapus/{id}', [UserKontroller::class, 'hapus']);

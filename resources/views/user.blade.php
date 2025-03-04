@@ -9,18 +9,25 @@
 <body>
     <h1>Data User</h1>
     <table border="1" cellpadding="2" cellspacing="0">
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Nama</th>
-                <th>ID Level Pengguna</th>
-            </tr>
-            <tr>
-                <td>{{ $data->user_id }}</td>
-                <td>{{ $data->username }}</td>
-                <td>{{ $data->nama }}</td>
-                <td>{{ $data->level_id }}</td>
-            </tr>
+        <tr>
+            <td>ID</td>
+            <td>Username</td>
+            <td>Nama</td>
+            <td>Level</td>
+            <td>AKsi</td>
+        </tr>
+        <?php foreach ($data as $d) { ?>
+        <tr>
+            <td><?php echo $d->user_id; ?></td>
+            <td><?php echo $d->username; ?></td>
+            <td><?php echo $d->nama; ?></td>
+            <td><?php echo $d->level; ?></td>
+            <td>
+                <a href="/user/ubah/<?php echo $d->user_id; ?>">Ubah</a> |
+                <a href="/user/hapus/<?php echo $d->user_id; ?>">Hapus</a>
+            </td>
+        </tr>
+        <?php } ?>
     </table>
 </body>
 </html>
