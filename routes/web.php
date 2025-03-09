@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserKontroller;
+use App\Http\Controllers\WelcomeController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -42,3 +43,5 @@ Route::post('/user/tambah_simpan', [UserKontroller::class, 'tambahSimpan']);
 Route::get('/user/ubah/{id}', [UserKontroller::class, 'ubah']);
 Route::put('/user/ubah_simpan/{id}', [UserKontroller::class, 'ubah_simpan']);
 Route::get('/user/hapus/{id}', [UserKontroller::class, 'hapus']);
+
+Route::get('/', [WelcomeController::class, 'index']);
