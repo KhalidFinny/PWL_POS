@@ -1,7 +1,7 @@
 <body>
     <h1>Form Tambah Data User</h1>
     <form method="post" action="/user/tambah_simpan">
-        <?php echo csrf_field(); ?>
+        {{ csrf_field(); ?>
         <label>Username</label>
         <input type="text" name="username" placeholder="Masukan Username"><br>
         <label>Nama</label>
