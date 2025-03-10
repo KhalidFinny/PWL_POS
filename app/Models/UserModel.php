@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +8,7 @@ class UserModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'm_user';
+    protected $table = 'm_user'; // Pastikan ini sesuai dengan tabel di database
     protected $primaryKey = 'user_id';
 
     protected $fillable = ['level_id', 'username', 'nama', 'password'];

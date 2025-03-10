@@ -45,3 +45,25 @@ Route::put('/user/ubah_simpan/{id}', [UserKontroller::class, 'ubah_simpan']);
 Route::get('/user/hapus/{id}', [UserKontroller::class, 'hapus']);
 
 Route::get('/', [WelcomeController::class, 'index']);
+
+Route::group(['prefix' => 'user'], function () {
+    Route::get('/', [UserKontroller::class, 'index']);
+    Route::post('/list', [UserKontroller::class, 'list']);
+    Route::get('/create', [UserKontroller::class, 'create']);
+    Route::post('/', [UserKontroller::class, 'store']);
+    Route::get('/{id}', [UserKontroller::class, 'show']);
+    Route::get('/{id}/edit', [UserKontroller::class, 'edit']);
+    Route::put('/{id}', [UserKontroller::class, 'update']);
+    Route::delete('/{id}', [UserKontroller::class, 'destroy']);
+});
+
+Route::group(['prefix' => 'level'], function () {
+    Route::get('/level', [LevelController::class, 'index']);
+    Route::post('/list', [LevelController::class, 'list']);
+    Route::get('/create', [LevelController::class, 'create']);
+    Route::post('/', [LevelController::class, 'store']);
+    Route::get('/{id}', [LevelController::class, 'show']);
+    Route::get('/{id}/edit', [LevelController::class, 'edit']);
+    Route::put('/{id}', [LevelController::class, 'update']);
+    Route::delete('/{id}', [LevelController::class, 'destroy']);
+});
