@@ -21,8 +21,9 @@ class UserKontroller extends Controller
         $page = (object) [
             'title' => 'Daftar user yang terdaftar dalam sistem'
         ];
+        $level = LevelModel::all();
         $activeMenu = 'user';
-        return view('user.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('user.index', ['level' => $level, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
 
@@ -30,6 +31,10 @@ class UserKontroller extends Controller
     {
         $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
             ->with('level');
+
+        if($request->level_id){
+            $users = $users->where('level_id', $request->level_id);
+        }
         return DataTables::of($users)
             ->addIndexColumn()
             ->addColumn('aksi', function ($user) {
