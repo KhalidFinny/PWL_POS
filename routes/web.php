@@ -67,3 +67,14 @@ Route::group(['prefix' => 'level'], function () {
     Route::put('/{id}', [LevelController::class, 'update']);
     Route::delete('/{id}', [LevelController::class, 'destroy']);
 });
+
+Route::group(['prefix' => 'kategori'], function () {
+    Route::get('/kategori', [Kategoricontroller::class, 'index']);
+    Route::post('/list', [Kategoricontroller::class, 'list']);
+    Route::get('/create', [Kategoricontroller::class, 'create']);
+    Route::post('/', [Kategoricontroller::class, 'store']);
+    Route::get('/{id}', [Kategoricontroller::class, 'show']);
+    Route::get('/{id}/edit', [Kategoricontroller::class, 'edit']);
+    Route::put('/{id}', [Kategoricontroller::class, 'update']);
+    Route::delete('/{id}', [Kategoricontroller::class, 'destroy']);
+});

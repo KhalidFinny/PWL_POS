@@ -27,7 +27,11 @@ class LevelController extends Controller
     public function list(Request $request)
     {
         $levels = LevelModel::select('level_id', 'level_kode', 'level_nama');
+        if($request->level_id){
+            $users = $levels->where('level_id', $request->level_id);
+        }
         return DataTables::of($levels)
+
             ->addIndexColumn()
             ->addColumn('aksi', function ($level) {
                 $btn = '<a href="' . url('/level/' . $level->level_id) . '" class="btn btn-info btn-sm">Detail</a> ';
