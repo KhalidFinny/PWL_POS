@@ -13,6 +13,6 @@ class BarangModel extends Model
 
     protected $fillable = ['barang_kode', 'barang_nama', 'harga_beli', 'harga_jual', 'kategori_id'];
     public function kategori(){
-        return $this->belongsTo(KategoriModel::class, 'barang_id') ->with('kategori');
+        return $this->belongsTo(KategoriModel::class, 'kategori_id', 'kategori_id');
     }
 }
