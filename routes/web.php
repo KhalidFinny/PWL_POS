@@ -10,7 +10,6 @@ use App\Http\Controllers\UserKontroller;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\SupplierController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,6 +57,8 @@ Route::group(['prefix' => 'user'], function () {
     Route::get('/{id}', [UserKontroller::class, 'show']);
     Route::get('/{id}/edit', [UserKontroller::class, 'edit']);
     Route::put('/{id}', [UserKontroller::class, 'update']);
+    Route::get('/{id}/edit_ajax', [UserKontroller::class, 'edit_ajax']);
+    Route::put('/{id}/update_ajax', [UserKontroller::class, 'update_ajax']);
     Route::delete('/{id}', [UserKontroller::class, 'destroy']);
 });
 
