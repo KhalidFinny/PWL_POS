@@ -59,6 +59,8 @@ Route::group(['prefix' => 'user'], function () {
     Route::put('/{id}', [UserKontroller::class, 'update']);
     Route::get('/{id}/edit_ajax', [UserKontroller::class, 'edit_ajax']);
     Route::put('/{id}/update_ajax', [UserKontroller::class, 'update_ajax']);
+    Route::get('/{id}/delete_ajax', [UserKontroller::class, 'confirm_ajax']);
+    Route::delete('/{id}/delete_ajax', [UserKontroller::class, 'delete_ajax']);
     Route::delete('/{id}', [UserKontroller::class, 'destroy']);
 });
 
