@@ -53,6 +53,8 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('/list', [UserKontroller::class, 'list']);
     Route::get('/create', [UserKontroller::class, 'create']);
     Route::post('/', [UserKontroller::class, 'store']);
+    Route::get('/create_ajax', [UserKontroller::class, 'create_ajax']);
+    Route::post('/ajax', [UserKontroller::class, 'store_ajax']);
     Route::get('/{id}', [UserKontroller::class, 'show']);
     Route::get('/{id}/edit', [UserKontroller::class, 'edit']);
     Route::put('/{id}', [UserKontroller::class, 'update']);
