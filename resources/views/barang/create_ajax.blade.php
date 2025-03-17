@@ -20,8 +20,8 @@
                 </div>
                 <div class="form-group">
                     <label>Kode Barang</label>
-                    <input value="" type="text" name="barang_kode" id="barang_kode" class="form-control" required>
-                    <small id="error-barang_kode" class="error-text form-text text-danger"></small>
+                    <input value="" type="text" name="brang_kode" id="brang_kode" class="form-control" required>
+                    <small id="error-brang_kode" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Nama Barang</label>
@@ -54,7 +54,7 @@
                     required: true,
                     number: true
                 },
-                barang_kode: {
+                brang_kode: {
                     required: true,
                     minlength: 3,
                     maxlength: 20
@@ -73,32 +73,6 @@
                     required: true,
                     number: true,
                     min: 0
-                }
-            },
-            messages: {
-                kategori_id: {
-                    required: "Kategori wajib dipilih",
-                    number: "Kategori harus berupa angka"
-                },
-                barang_kode: {
-                    required: "Kode barang wajib diisi",
-                    minlength: "Kode barang minimal 3 karakter",
-                    maxlength: "Kode barang maksimal 20 karakter"
-                },
-                barang_nama: {
-                    required: "Nama barang wajib diisi",
-                    minlength: "Nama barang minimal 3 karakter",
-                    maxlength: "Nama barang maksimal 100 karakter"
-                },
-                harga_beli: {
-                    required: "Harga beli wajib diisi",
-                    number: "Harga beli harus berupa angka",
-                    min: "Harga beli tidak boleh negatif"
-                },
-                harga_jual: {
-                    required: "Harga jual wajib diisi",
-                    number: "Harga jual harus berupa angka",
-                    min: "Harga jual tidak boleh negatif"
                 }
             },
             submitHandler: function(form) {
@@ -126,13 +100,6 @@
                                 text: response.message
                             });
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Terjadi Kesalahan',
-                            text: 'Terjadi kesalahan pada server: ' + error
-                        });
                     }
                 });
                 return false;
