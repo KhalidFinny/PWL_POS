@@ -55,10 +55,14 @@ Route::get('login', [AuthController::class,'login'])->name('login');
 Route::post('login', [AuthController::class,'postLogin']);
 Route::get('logout', [AuthController::class,'logout'])->middleware('auth');
 
-Route::middleware(['auth'])->group(function(){
+
+Route::middleware(['auth'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::group(['prefix' => 'user'], function () {
+});
+
+Route::group(['prefix' => 'user'], function () {
+Route::middleware(['authorize:ADM'])->group(function(){
         Route::get('/', [UserKontroller::class, 'index']);
         Route::post('/list', [UserKontroller::class, 'list']);
         Route::get('/create', [UserKontroller::class, 'create']);
@@ -75,8 +79,11 @@ Route::middleware(['auth'])->group(function(){
         Route::delete('/{id}/delete_ajax', [UserKontroller::class, 'delete_ajax']);
         Route::delete('/{id}', [UserKontroller::class, 'destroy']);
     });
+});
 
-    Route::middleware(['authorize:ADM'])->group(function () {
+
+    Route::group(['prefix' => 'level'], function () {
+
         Route::get('/', [LevelController::class, 'index']);
         Route::post('/list', [LevelController::class, 'list']);
         Route::get('/create', [LevelController::class, 'create']);
@@ -93,8 +100,10 @@ Route::middleware(['auth'])->group(function(){
         Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']);
         Route::delete('/{id}', [LevelController::class, 'destroy']);
     });
+});
 
     Route::group(['prefix' => 'barang'], function () {
+    Route::middleware(['authorize:ADM,MNG'])->group(function () {
         Route::get('/', [BarangController::class, 'index']);
         Route::post('/list', [BarangController::class, 'list']);
         Route::get('/create', [BarangController::class, 'create']);
@@ -111,8 +120,10 @@ Route::middleware(['auth'])->group(function(){
         Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);
         Route::delete('/{id}', [BarangController::class, 'destroy']);
     });
+});
 
     Route::group(['prefix' => 'kategori'], function () {
+
         Route::get('/', [KategoriController::class, 'index']);
         Route::post('/list', [KategoriController::class, 'list']);
         Route::get('/create', [KategoriController::class, 'create']);
@@ -129,9 +140,11 @@ Route::middleware(['auth'])->group(function(){
         Route::delete('/{id}/delete_ajax', [KategoriController::class, 'delete_ajax']);
         Route::delete('/{id}', [KategoriController::class, 'destroy']);
     });
+    });
 
 
     Route::group(['prefix' => 'supplier'], function () {
+
         Route::get('/', [SupplierController::class, 'index']);
         Route::post('/list', [SupplierController::class, 'list']);
         Route::get('/create', [SupplierController::class, 'create']);
@@ -148,4 +161,4 @@ Route::middleware(['auth'])->group(function(){
         Route::delete('/{id}/delete_ajax', [SupplierController::class, 'delete_ajax']);
         Route::delete('/{id}', [SupplierController::class, 'destroy']);
     });
-});
+    });
