@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Log in (v2)</title>
+    <title>AdminLTE 3 | Register</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('AdminLTE/dist/css/adminlte.min.css') }}">
-    {{-- SweetAlert2 --}}
+    <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
 </head>
 
@@ -25,18 +25,28 @@
         <div class="card card-outline card-primary">
             <div class="card-header text-center"><a href="{{ url('/') }}" class="h1"><b>Admin</b>LTE</a></div>
             <div class="card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
-                <form action="{{ url('login') }}" method="POST" id="form-login">
+                <p class="login-box-msg">Register to create a new account</p>
+                <form action="{{ url('register') }}" method="POST" id="form-register">
                     @csrf
                     <div class="input-group mb-3">
                         <input type="text" id="username" name="username" class="form-control"
                             placeholder="Username">
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                                <span class="fas fa-user"></span>
                             </div>
                         </div>
                         <small id="error-username" class="error-text text-danger"></small>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" id="nama" name="nama" class="form-control"
+                            placeholder="Nama Lengkap">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-address-card"></span>
+                            </div>
+                        </div>
+                        <small id="error-nama" class="error-text text-danger"></small>
                     </div>
                     <div class="input-group mb-3">
                         <input type="password" id="password" name="password" class="form-control"
@@ -49,23 +59,15 @@
                         <small id="error-password" class="error-text text-danger"></small>
                     </div>
                     <div class="row">
-                        <div class="col-8">
-                            <div class="icheck-primary">
-                                <input type="checkbox" id="remember"><label for="remember">Remember Me</label>
-                            </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">Register</button>
                         </div>
-                        <!-- /.col -->
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-                        </div>
-                        <!-- /.col -->
                     </div>
                 </form>
-            <!-- Tambahkan link ke halaman registrasi -->
-            <p class="mb-0 mt-3 text-center">
-                Belum punya akun? <a href="{{ url('register') }}" class="text-center">Register di sini</a>
-            </p>
-        </div>
+                <p class="mb-0 mt-3 text-center">
+                    Sudah punya akun? <a href="{{ url('login') }}" class="text-center">Login di sini</a>
+                </p>
+            </div>
             <!-- /.card-body -->
         </div>
         <!-- /.card -->
@@ -76,13 +78,11 @@
     <script src="{{ asset('AdminLTE/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
     <script src="{{ asset('AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    {{-- Jquery-validation --}}
+    <!-- jQuery Validation -->
     <script src="{{ asset('AdminLTE/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('AdminLTE/plugins/jquery-validation/additional-methods.min.js') }}"></script>
-
-    {{-- SweetAlert2 --}}
+    <!-- SweetAlert2 -->
     <script src="{{ asset('AdminLTE/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
-
     <!-- AdminLTE App -->
     <script src="{{ asset('AdminLTE/dist/js/adminlte.min.js') }}"></script>
     <script>
@@ -91,18 +91,39 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
         $(document).ready(function() {
-            $("#form-login").validate({
+            $("#form-register").validate({
                 rules: {
                     username: {
                         required: true,
                         minlength: 3,
                         maxlength: 20
                     },
+                    nama: {
+                        required: true,
+                        maxlength: 100
+                    },
                     password: {
                         required: true,
-                        minlength: 6,
+                        minlength: 5,
                         maxlength: 20
+                    }
+                },
+                messages: {
+                    username: {
+                        required: "Username wajib diisi",
+                        minlength: "Username minimal 3 karakter",
+                        maxlength: "Username maksimal 20 karakter"
+                    },
+                    nama: {
+                        required: "Nama wajib diisi",
+                        maxlength: "Nama maksimal 100 karakter"
+                    },
+                    password: {
+                        required: "Password wajib diisi",
+                        minlength: "Password minimal 5 karakter",
+                        maxlength: "Password maksimal 20 karakter"
                     }
                 },
                 submitHandler: function(form) {
@@ -120,7 +141,7 @@
                                 }).then(function() {
                                     window.location = response.redirect;
                                 });
-                            } else { // Jika login gagal
+                            } else {
                                 $('.error-text').text('');
                                 $.each(response.msgField, function(prefix, val) {
                                     $('#error-' + prefix).text(val[0]);
@@ -134,6 +155,11 @@
                         },
                         error: function(xhr, status, error) {
                             console.log('AJAX Error:', xhr, status, error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan',
+                                text: 'Gagal memproses registrasi: ' + (xhr.responseJSON?.message || error),
+                            });
                         }
                     });
                     return false;

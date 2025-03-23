@@ -51,6 +51,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::pattern('id', '[0-9]+');
 
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'postregister']);
 Route::get('login', [AuthController::class,'login'])->name('login');
 Route::post('login', [AuthController::class,'postLogin']);
 Route::get('logout', [AuthController::class,'logout'])->middleware('auth');
@@ -59,7 +61,6 @@ Route::get('logout', [AuthController::class,'logout'])->middleware('auth');
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-});
 
 Route::group(['prefix' => 'user'], function () {
 Route::middleware(['authorize:ADM'])->group(function(){
@@ -83,7 +84,7 @@ Route::middleware(['authorize:ADM'])->group(function(){
 
 
     Route::group(['prefix' => 'level'], function () {
-
+    Route::middleware(['authorize:ADM'])->group(function () {
         Route::get('/', [LevelController::class, 'index']);
         Route::post('/list', [LevelController::class, 'list']);
         Route::get('/create', [LevelController::class, 'create']);
@@ -103,7 +104,7 @@ Route::middleware(['authorize:ADM'])->group(function(){
 });
 
     Route::group(['prefix' => 'barang'], function () {
-    Route::middleware(['authorize:ADM,MNG'])->group(function () {
+        Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
         Route::get('/', [BarangController::class, 'index']);
         Route::post('/list', [BarangController::class, 'list']);
         Route::get('/create', [BarangController::class, 'create']);
@@ -123,7 +124,7 @@ Route::middleware(['authorize:ADM'])->group(function(){
 });
 
     Route::group(['prefix' => 'kategori'], function () {
-
+        Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
         Route::get('/', [KategoriController::class, 'index']);
         Route::post('/list', [KategoriController::class, 'list']);
         Route::get('/create', [KategoriController::class, 'create']);
@@ -144,7 +145,7 @@ Route::middleware(['authorize:ADM'])->group(function(){
 
 
     Route::group(['prefix' => 'supplier'], function () {
-
+        Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
         Route::get('/', [SupplierController::class, 'index']);
         Route::post('/list', [SupplierController::class, 'list']);
         Route::get('/create', [SupplierController::class, 'create']);
@@ -162,3 +163,5 @@ Route::middleware(['authorize:ADM'])->group(function(){
         Route::delete('/{id}', [SupplierController::class, 'destroy']);
     });
     });
+
+});
