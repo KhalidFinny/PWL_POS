@@ -21,7 +21,7 @@ class AuthController extends Controller
             if ($request->ajax() || $request->wantsJson()) {
                 $request->validate([
                     'username' => 'required|min:4|max:20',
-                    'password' => 'required|min:6|max:20',
+                    'password' => 'required|min:4|max:20',
                 ]);
                 $credentials = $request->only('username', 'password');
                 if (Auth::attempt($credentials)) {

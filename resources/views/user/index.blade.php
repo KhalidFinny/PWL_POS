@@ -4,9 +4,9 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title ?? 'Default Title' }}</h3>
             <div class="card-tools">
+                <button onclick="modalAction('{{ url('/user/import') }}')" class="btn btn-sm btn-info mt-1">Import User</button>
                 <a class="btn btn-sm btn-primary mt-1" href="{{ url('user/create') }}">Tambah</a>
-                <button onclick="modalAction('{{ url('/user/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
-                    Ajax</button>
+                <button onclick="modalAction('{{ url('/user/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
         </div>
         <div class="card-body">
@@ -19,7 +19,7 @@
             <div class="row col-md-12 form-group row">
                 <label class="col-1 control-label col-form-label">Filter</label>
                 <div class="col-3">
-                    <select class="form-control" name="level_id" required id="level_id">
+                    <select class="form-control" name="level_id" id="level_id">
                         <option value="">- Semua -</option>
                         @foreach ($level as $item)
                             <option value="{{ $item->level_id }}">{{ $item->level_nama }}</option>
@@ -31,18 +31,18 @@
             <table class="table table-bordered table-striped table-hover table-sm" id="table_user">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>No</th>
+                        <th>User ID</th>
                         <th>Username</th>
                         <th>Nama</th>
-                        <th>Level
-                            Pengguna</th>
+                        <th>Level Pengguna</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
             </table>
         </div>
     </div>
-    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data- backdrop="static"
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
         data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
 @push('css')
@@ -53,9 +53,9 @@
             $('#myModal').load(url, function(){
                 $('#myModal').modal('show');
             });
-            }
-            var dataUser;
-            $(document).ready(function() {
+        }
+        var dataUser;
+        $(document).ready(function() {
             dataUser = $('#table_user').DataTable({
                 serverSide: true,
                 ajax: {
@@ -70,6 +70,11 @@
                     data: "DT_RowIndex",
                     className: "text-center",
                     orderable: false,
+                    searchable: false
+                }, {
+                    data: "user_id",
+                    className: "text-center",
+                    orderable: true,
                     searchable: false
                 }, {
                     data: "username",

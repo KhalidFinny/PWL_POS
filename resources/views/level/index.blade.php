@@ -2,8 +2,9 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">{{ $page->title ?? 'Level Management' }}</h3>
+            <h3 class="card-title">{{ $page->title ?? 'Default Title' }}</h3>
             <div class="card-tools">
+                <button onclick="modalAction('{{ url('/level/import') }}')" class="btn btn-sm btn-info mt-1">Import Level</button>
                 <a class="btn btn-sm btn-primary mt-1" href="{{ url('level/create') }}">Tambah</a>
                 <button onclick="modalAction('{{ url('/level/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
@@ -18,7 +19,7 @@
             <div class="row col-md-12 form-group row">
                 <label class="col-1 control-label col-form-label">Filter</label>
                 <div class="col-3">
-                    <select class="form-control" name="level_id" required id="level_id">
+                    <select class="form-control" name="level_id" id="level_id">
                         <option value="">- Semua -</option>
                         @foreach ($levels as $item)
                             <option value="{{ $item->level_id }}">{{ $item->level_nama }}</option>
@@ -30,7 +31,8 @@
             <table class="table table-bordered table-striped table-hover table-sm" id="table_level">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>No</th>
+                        <th>Level ID</th>
                         <th>Kode Level</th>
                         <th>Nama Level</th>
                         <th>Aksi</th>
@@ -67,6 +69,11 @@
                     data: "DT_RowIndex",
                     className: "text-center",
                     orderable: false,
+                    searchable: false
+                }, {
+                    data: "level_id",
+                    className: "text-center",
+                    orderable: true,
                     searchable: false
                 }, {
                     data: "level_kode",
