@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LevelController extends Controller
 {
@@ -353,4 +354,13 @@ class LevelController extends Controller
         $writer->save('php://output');
         exit;
     }
+    public function export_pdf()
+    {
+        $level = LevelModel::select('level_id', 'level_kode', 'level_nama')
+            ->orderBy('level_kode')
+            ->get();
+
+        $pdf = Pdf::loadView('level.export_pdf', compact('level'));
+        return $pdf->download('Data Level ' . date('Y-m-d') . '.pdf');
+}
 }

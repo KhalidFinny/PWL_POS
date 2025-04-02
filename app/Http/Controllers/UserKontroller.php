@@ -9,6 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\LevelModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserKontroller extends Controller
 {
@@ -372,4 +373,14 @@ class UserKontroller extends Controller
         $writer->save('php://output');
         exit;
     }
+    public function export_pdf()
+    {
+        $user = UserModel::select('user_id', 'username', 'nama', 'level_id')
+            ->with('level')
+            ->orderBy('level_id')
+            ->get();
+
+        $pdf = Pdf::loadView('user.export_pdf', compact('user'));
+        return $pdf->download('Data User ' . date('Y-m-d') . '.pdf');
+}
 }
