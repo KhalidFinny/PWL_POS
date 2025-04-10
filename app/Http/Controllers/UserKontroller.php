@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -10,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\LevelModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class UserKontroller extends Controller
 {
@@ -32,13 +33,22 @@ class UserKontroller extends Controller
 
     public function list(Request $request)
     {
-        $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
+        $users = UserModel::select('user_id', 'username', 'nama', 'level_id', 'profile_picture')
             ->with('level');
         if ($request->level_id) {
             $users->where('level_id', $request->level_id);
         }
-        return DataTables::of($users)
+
+        $dataTable = DataTables::of($users)
             ->addIndexColumn()
+            ->addColumn('profile_picture', function ($user) {
+                $url = $user->getProfilePictureUrl();
+                Log::info('Profile Picture URL for user ' . $user->user_id . ': ' . $url);
+                return '<img src="' . $url . '" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">';
+            })
+            ->addColumn('level_nama', function ($user) {
+                return $user->level ? $user->level->level_nama : 'N/A';
+            })
             ->addColumn('aksi', function ($user) {
                 $btn = '<button onclick="modalAction(\''.url('/user/' . $user->user_id .
                 '/show_ajax').'\')" class="btn btn-info btn-sm">Detail</button> ';
@@ -48,8 +58,20 @@ class UserKontroller extends Controller
                 '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
             })
-            ->rawColumns(['aksi'])
-            ->make(true);
+            ->editColumn('user_id', function ($user) {
+                return $user->user_id;
+            })
+            ->editColumn('username', function ($user) {
+                return $user->username;
+            })
+            ->editColumn('nama', function ($user) {
+                return $user->nama;
+            })
+            ->rawColumns(['profile_picture', 'aksi']);
+
+        $response = $dataTable->make(true);
+        Log::info('DataTable Response:', $response->getData(true));
+        return $response;
     }
 
     public function create()
@@ -158,32 +180,47 @@ class UserKontroller extends Controller
 
     public function store_ajax(Request $request)
     {
+        Log::info('store_ajax called', $request->all());
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'level_id' => 'required|integer',
                 'username' => 'required|string|min:3|unique:m_user,username',
                 'nama' => 'required|string|max:100',
-                'password' => 'required|min:6'
+                'password' => 'required|min:6',
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
             ];
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
+                Log::error('Validation failed', $validator->errors()->toArray());
                 return response()->json([
                     'status' => false,
                     'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(),
+                    'msgField' => $validator->errors()
                 ]);
             }
-            UserModel::create([
+
+            $data = [
                 'username' => $request->username,
                 'nama' => $request->nama,
                 'password' => bcrypt($request->password),
                 'level_id' => $request->level_id
-            ]);
+            ];
+
+            if ($request->hasFile('profile_picture')) {
+                Log::info('File upload detected', ['file' => $request->file('profile_picture')]);
+                $file = $request->file('profile_picture');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('profile_pictures', $filename, 'public');
+                $data['profile_picture'] = $path;
+            }
+
+            UserModel::create($data);
             return response()->json([
                 'status' => true,
                 'message' => 'Data user berhasil disimpan'
             ]);
         }
+        Log::warning('Non-AJAX request to store_ajax');
         return redirect('/');
     }
 
@@ -203,29 +240,45 @@ class UserKontroller extends Controller
 
     public function update_ajax(Request $request, string $id)
     {
+        Log::info('update_ajax called for user ' . $id, $request->all());
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'level_id' => 'required|integer',
                 'username' => 'required|string|min:3|unique:m_user,username,' . $id . ',user_id',
                 'nama' => 'required|string|max:100',
-                'password' => 'nullable|min:6|max:20'
+                'password' => 'nullable|min:6|max:20',
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
             ];
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
+                Log::error('Validation failed', $validator->errors()->toArray());
                 return response()->json([
                     'status' => false,
                     'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(),
+                    'msgField' => $validator->errors()
                 ]);
             }
+
             $user = UserModel::find($id);
             if ($user) {
-                $user->update([
+                $data = [
                     'username' => $request->username,
                     'nama' => $request->nama,
                     'password' => $request->password ? bcrypt($request->password) : $user->password,
                     'level_id' => $request->level_id
-                ]);
+                ];
+
+                if ($request->hasFile('profile_picture')) {
+                    if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+                        Storage::disk('public')->delete($user->profile_picture);
+                    }
+                    $file = $request->file('profile_picture');
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $path = $file->storeAs('profile_pictures', $filename, 'public');
+                    $data['profile_picture'] = $path;
+                }
+
+                $user->update($data);
                 return response()->json([
                     'status' => true,
                     'message' => 'Data berhasil diupdate'
@@ -237,6 +290,7 @@ class UserKontroller extends Controller
                 ]);
             }
         }
+        Log::warning('Non-AJAX request to update_ajax');
         return redirect('/');
     }
 
@@ -329,6 +383,7 @@ class UserKontroller extends Controller
         }
         return redirect('/');
     }
+
     public function export_excel()
     {
         $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
@@ -373,6 +428,7 @@ class UserKontroller extends Controller
         $writer->save('php://output');
         exit;
     }
+
     public function export_pdf()
     {
         $user = UserModel::select('user_id', 'username', 'nama', 'level_id')
@@ -382,5 +438,5 @@ class UserKontroller extends Controller
 
         $pdf = Pdf::loadView('user.export_pdf', compact('user'));
         return $pdf->download('Data User ' . date('Y-m-d') . '.pdf');
-}
+    }
 }

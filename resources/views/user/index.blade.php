@@ -4,10 +4,14 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title ?? 'Default Title' }}</h3>
             <div class="card-tools">
-                <button onclick="modalAction('{{ url('/user/import') }}')" class="btn btn-sm btn-info mt-1">Import User</button>
-                <a href="{{ url('/user/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export User</a>
-                <button onclick="modalAction('{{ url('/user/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
-                <a href="{{ url('/user/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i>Export User PDF</a>
+                <button onclick="modalAction('{{ url('/user/import') }}')" class="btn btn-sm btn-info mt-1">Import
+                    User</button>
+                <a href="{{ url('/user/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export
+                    User</a>
+                <button onclick="modalAction('{{ url('/user/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
+                    Ajax</button>
+                <a href="{{ url('/user/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i>Export User
+                    PDF</a>
             </div>
         </div>
         <div class="card-body">
@@ -33,6 +37,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th>Profile Picture</th>
                         <th>User ID</th>
                         <th>Username</th>
                         <th>Nama</th>
@@ -51,7 +56,7 @@
 @push('js')
     <script>
         function modalAction(url = '') {
-            $('#myModal').load(url, function(){
+            $('#myModal').load(url, function() {
                 $('#myModal').modal('show');
             });
         }
@@ -68,36 +73,48 @@
                     }
                 },
                 columns: [{
-                    data: "DT_RowIndex",
-                    className: "text-center",
-                    orderable: false,
-                    searchable: false
-                }, {
-                    data: "user_id",
-                    className: "text-center",
-                    orderable: true,
-                    searchable: false
-                }, {
-                    data: "username",
-                    className: "",
-                    orderable: true,
-                    searchable: true
-                }, {
-                    data: "nama",
-                    className: "",
-                    orderable: true,
-                    searchable: true
-                }, {
-                    data: "level.level_nama",
-                    className: "",
-                    orderable: false,
-                    searchable: false
-                }, {
-                    data: "aksi",
-                    className: "",
-                    orderable: false,
-                    searchable: false
-                }]
+                        data: "DT_RowIndex",
+                        className: "text-center",
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "profile_picture",
+                        className: "text-center",
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "user_id",
+                        className: "text-center",
+                        orderable: true,
+                        searchable: false
+                    },
+                    {
+                        data: "username",
+                        className: "",
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
+                        data: "nama",
+                        className: "",
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
+                        data: "level_nama",
+                        className: "",
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "aksi",
+                        className: "",
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
             });
             $('#level_id').on('change', function() {
                 dataUser.ajax.reload();
