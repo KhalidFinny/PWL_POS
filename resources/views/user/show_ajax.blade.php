@@ -3,8 +3,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-
-                label="Close"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
         </div>
         <div class="modal-body">
             <div class="alert alert-danger">
@@ -21,31 +20,31 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Show Data User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-
-                    label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
             </div>
             <div class="modal-body">
+                <!-- Add Profile Picture -->
+                <div class="form-group text-center">
+                    <img src="{{ $user->getProfilePictureUrl() }}" alt="Profile Picture" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px;">
+                </div>
                 <div class="form-group">
                     <label>Level Pengguna</label>
                     <select name="level_id" id="level_id" class="form-control" disabled>
                         <option value="">- Pilih Level -</option>
                         @foreach($level as $l)
-                        <option {{ ($l->level_id == $user->level_id)? 'selected' : '' }}
-                            value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
+                        <option {{ ($l->level_id == $user->level_id) ? 'selected' : '' }} value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
                         @endforeach
                     </select>
                     <small id="error-level_id" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Username</label>
-                    <input value="{{ $user->username }}" type="text" name="username"
-                        id="username" class="form-control" disabled>
+                    <input value="{{ $user->username }}" type="text" name="username" id="username" class="form-control" disabled>
                     <small id="error-username" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Nama</label>
-                    <input value="{{ $user->nama }}" type="text" name="nama" id="nama"
-                        class="form-control" disabled>
+                    <input value="{{ $user->nama }}" type="text" name="nama" id="nama" class="form-control" disabled>
                     <small id="error-nama" class="error-text form-text text-danger"></small>
                 </div>
             </div>
