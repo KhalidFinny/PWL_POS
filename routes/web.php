@@ -11,6 +11,7 @@ use App\Http\Controllers\UserKontroller;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -23,31 +24,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
 |
-// */
-// Route::get('/', [HomeController::class, 'index'])->name('home');
-// Route::prefix('category')->group(function () {
-//     Route::get('food-beverage', [ProductController::class, 'foodBeverage'])->name('products.food-beverage');
-//     Route::get('beauty-health', [ProductController::class, 'beautyHealth'])->name('products.beauty-health');
-//     Route::get('home-care', [ProductController::class, 'homeCare'])->name('products.home-care');
-//     Route::get('baby-kid', [ProductController::class, 'babyKid'])->name('products.baby-kid');
-// });
-// Route::get('user/{id}/name/{name}', [UserController::class, 'show'])->name('users.show');
-// Route::get('/sales', [SalesController::class, 'sales'])->name('sales.index');
-// Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-// Route::get('/house', [HomeController::class, 'index'])->name('house');
-// Route::get('/user', [UserController::class, 'index'])->name('users.index');
-
-// Route::get('/level', [LevelController::class, 'index']);
-// Route::get('/kategori', [Kategoricontroller::class, 'index']);
-// Route::get('/user', [UserKontroller::class, 'index']);
-
-// Route::get('/user/tambah', [UserKontroller::class, 'tambah']);
-// Route::post('/user/tambah_simpan', [UserKontroller::class, 'tambahSimpan']);
-// Route::get('/user/ubah/{id}', [UserKontroller::class, 'ubah']);
-// Route::put('/user/ubah_simpan/{id}', [UserKontroller::class, 'ubah_simpan']);
-// Route::get('/user/hapus/{id}', [UserKontroller::class, 'hapus']);
-
-
+*/
 
 Route::pattern('id', '[0-9]+');
 
@@ -56,7 +33,6 @@ Route::post('/register', [AuthController::class, 'postregister']);
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postLogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
-
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index']);
@@ -179,6 +155,21 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/import_ajax', [SupplierController::class, 'import_ajax']);
             Route::get('/export_excel', [SupplierController::class, 'export_excel']);
             Route::get('/export_pdf', [SupplierController::class, 'export_pdf']);
+        });
+    });
+
+    Route::group(['prefix' => 'stok'], function () {
+        Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
+            Route::get('/', [StockController::class, 'index']);
+        });
+        Route::middleware(['authorize:ADM,MNG'])->group(function () {
+            Route::post('/list', [StockController::class, 'list']);
+            Route::post('/increment', [StockController::class, 'increment']);
+            Route::delete('/{id}', [StockController::class, 'destroy']);
+            Route::get('/import', [StockController::class, 'import']);
+            Route::post('/import_ajax', [StockController::class, 'import_ajax']);
+            Route::get('/export_excel', [StockController::class, 'export_excel']);
+            Route::get('/export_pdf', [StockController::class, 'export_pdf']);
         });
     });
 });
