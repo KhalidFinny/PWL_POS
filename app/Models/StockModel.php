@@ -12,6 +12,13 @@ class StockModel extends Model
     protected $table = 't_stok';
     protected $primaryKey = 'stok_id';
     public $timestamps = false;
+    protected $fillable = [
+        'barang_id',
+        'supplier_id',
+        'user_id',
+        'stok_tanggal',
+        'stok_jumlah'
+    ];
 
     public function barang()
     {

@@ -11,6 +11,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class BarangController extends Controller
 {
@@ -74,62 +75,77 @@ class BarangController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'kategori_id' => 'required|integer',
-            'brang_kode' => 'required|string|min:3|unique:m_barang,brang_kode',
-            'barang_nama' => 'required|string|max:100',
-            'harga_beli' => 'required|numeric|min:0',
-            'harga_jual' => 'required|numeric|min:0'
-        ]);
+        try {
+            $request->validate([
+                'kategori_id' => 'required|integer',
+                'brang_kode' => 'required|string|min:3|unique:m_barang,brang_kode',
+                'barang_nama' => 'required|string|max:100',
+                'harga_beli' => 'required|numeric|min:0',
+                'harga_jual' => 'required|numeric|min:0'
+            ]);
 
-        BarangModel::create([
-            'kategori_id' => $request->kategori_id,
-            'brang_kode' => $request->brang_kode,
-            'barang_nama' => $request->barang_nama,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual
-        ]);
+            BarangModel::create([
+                'kategori_id' => $request->kategori_id,
+                'brang_kode' => $request->brang_kode,
+                'barang_nama' => $request->barang_nama,
+                'harga_beli' => $request->harga_beli,
+                'harga_jual' => $request->harga_jual
+            ]);
 
-        return redirect('/barang')->with('success', 'Barang berhasil disimpan');
+            return redirect('/barang')->with('success', 'Barang berhasil disimpan');
+        } catch (\Exception $e) {
+            Log::error('Error in store method: ' . $e->getMessage());
+            return redirect('/barang')->with('error', 'Terjadi kesalahan saat menyimpan data');
+        }
     }
 
     public function show(string $id)
     {
-        $barang = BarangModel::find($id);
-        if (!$barang) {
-            return redirect('/barang')->with('error', 'Data barang tidak ditemukan');
+        try {
+            $barang = BarangModel::find($id);
+            if (!$barang) {
+                return redirect('/barang')->with('error', 'Data barang tidak ditemukan');
+            }
+
+            $breadcrumb = (object) [
+                'title' => 'Detail Barang',
+                'list' => ['Home', 'Barang', 'Detail']
+            ];
+
+            $page = (object) [
+                'title' => 'Detail Barang'
+            ];
+            $activeMenu = 'barang';
+            return view('barang.show', compact('barang', 'breadcrumb', 'page', 'activeMenu'));
+        } catch (\Exception $e) {
+            Log::error('Error in show method: ' . $e->getMessage());
+            return redirect('/barang')->with('error', 'Terjadi kesalahan saat menampilkan data');
         }
-
-        $breadcrumb = (object) [
-            'title' => 'Detail Barang',
-            'list' => ['Home', 'Barang', 'Detail']
-        ];
-
-        $page = (object) [
-            'title' => 'Detail Barang'
-        ];
-        $activeMenu = 'barang';
-        return view('barang.show', compact('barang', 'breadcrumb', 'page', 'activeMenu'));
     }
 
     public function edit(string $id)
     {
-        $barang = BarangModel::find($id);
-        if (!$barang) {
-            return redirect('/barang')->with('error', 'Data barang tidak ditemukan');
+        try {
+            $barang = BarangModel::find($id);
+            if (!$barang) {
+                return redirect('/barang')->with('error', 'Data barang tidak ditemukan');
+            }
+
+            $breadcrumb = (object) [
+                'title' => 'Edit Barang',
+                'list' => ['Home', 'Barang', 'Edit']
+            ];
+
+            $page = (object) [
+                'title' => 'Edit Barang'
+            ];
+            $activeMenu = 'barang';
+            $kategori = KategoriModel::all();
+            return view('barang.edit', compact('barang', 'breadcrumb', 'page', 'activeMenu', 'kategori'));
+        } catch (\Exception $e) {
+            Log::error('Error in edit method: ' . $e->getMessage());
+            return redirect('/barang')->with('error', 'Terjadi kesalahan saat mengedit data');
         }
-
-        $breadcrumb = (object) [
-            'title' => 'Edit Barang',
-            'list' => ['Home', 'Barang', 'Edit']
-        ];
-
-        $page = (object) [
-            'title' => 'Edit Barang'
-        ];
-        $activeMenu = 'barang';
-        $kategori = KategoriModel::all();
-        return view('barang.edit', compact('barang', 'breadcrumb', 'page', 'activeMenu', 'kategori'));
     }
 
     public function update(Request $request, string $id)

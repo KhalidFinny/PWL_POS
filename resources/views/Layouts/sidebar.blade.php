@@ -1,4 +1,4 @@
-<div class="sidebar">
+<div class="sidebar bg-white">
     <!-- SidebarSearch Form -->
     <div class="form-inline mt-2">
         <div class="input-group" data-widget="sidebar-search">
@@ -12,7 +12,7 @@
     </div>
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <ul class="nav nav-pills nav-sidebar  flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-item">
                 <a href="{{ url('/') }}" class="nav-link {{ $activeMenu == 'dashboard' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -68,3 +68,16 @@
         </ul>
     </nav>
 </div>
+<style>
+    .nav-sidebar .nav-link.active {
+    border-left: 4px solid #007bff; /* Bootstrap primary blue */
+    background-color: transparent; /* or white if needed */
+    color: #007bff; /* Optional: blue text to match */
+    font-weight: 500;
+}
+
+.nav-sidebar .nav-link.active i {
+    color: #007bff; /* Make icon color blue */
+}
+
+</style>

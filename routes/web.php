@@ -15,6 +15,7 @@ use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -161,13 +162,18 @@ Route::middleware(['auth'])->group(function () {
     Route::group(['prefix' => 'stok'], function () {
         Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
             Route::get('/', [StockController::class, 'index']);
-        });
-        Route::middleware(['authorize:ADM,MNG'])->group(function () {
             Route::post('/list', [StockController::class, 'list']);
             Route::post('/increment', [StockController::class, 'increment']);
+            Route::get('/{id}', [StockController::class, 'show']);
+            Route::get('/{id}/edit', [StockController::class, 'edit']);
+            Route::put('/{id}', [StockController::class, 'update']);
+            Route::get('/{id}/show_ajax', [StockController::class, 'show_ajax']);
+            Route::get('/{id}/edit_ajax', [StockController::class, 'edit_ajax']);
+            Route::put('/{id}/update_ajax', [StockController::class, 'update_ajax']);
+            Route::get('/{id}/delete_ajax', [StockController::class, 'confirm_ajax']);
             Route::delete('/{id}', [StockController::class, 'destroy']);
             Route::get('/import', [StockController::class, 'import']);
-            Route::post('/import_ajax', [StockController::class, 'import_ajax']);
+            Route::post('/import', [StockController::class, 'import_ajax']);
             Route::get('/export_excel', [StockController::class, 'export_excel']);
             Route::get('/export_pdf', [StockController::class, 'export_pdf']);
         });

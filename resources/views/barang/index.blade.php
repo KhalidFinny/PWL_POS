@@ -57,7 +57,7 @@
 @endsection
 @push('js')
     <script>
-        function modalAction(url = '') {
+ function modalAction(url = '') {
             $('#myModal').load(url, function() {
                 $('#myModal').modal('show');
             });
