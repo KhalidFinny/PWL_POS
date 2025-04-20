@@ -4,22 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StockModel extends Model
 {
+    use HasFactory, SoftDeletes;
 
-    use HasFactory;
     protected $table = 't_stok';
     protected $primaryKey = 'stok_id';
-    public $timestamps = false;
-    protected $fillable = [
-        'barang_id',
-        'supplier_id',
-        'user_id',
-        'stok_tanggal',
-        'stok_jumlah'
-    ];
+    protected $fillable = ['barang_id', 'supplier_id', 'user_id', 'stok_tanggal', 'stok_jumlah'];
 
+    protected $dates = ['deleted_at'];
     public function barang()
     {
         return $this->belongsTo(BarangModel::class, 'barang_id');
@@ -35,4 +30,3 @@ class StockModel extends Model
         return $this->belongsTo(UserModel::class, 'user_id');
     }
 }
-

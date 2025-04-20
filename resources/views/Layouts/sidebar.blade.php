@@ -19,7 +19,7 @@
                     <p>Dashboard</p>
                 </a>
             </li>
-            <li class="nav-header">Data Pengguna</li>
+            <li class="nav-header text-blue-600 font-medium">Data Pengguna</li>
             <li class="nav-item">
                 <a href="{{ url('/level') }}" class="nav-link {{ $activeMenu == 'level' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-layer-group"></i>
@@ -32,7 +32,7 @@
                     <p>Data User</p>
                 </a>
             </li>
-            <li class="nav-header">Data Barang</li>
+            <li class="nav-header text-blue-600 font-medium">Data Barang</li>
             <li class="nav-item">
                 <a href="{{ url('/kategori') }}" class="nav-link {{ $activeMenu == 'kategori' ? 'active' : '' }} ">
                     <i class="nav-icon far fa-bookmark"></i>
@@ -51,7 +51,7 @@
                     <p>Data Supplier</p>
                 </a>
             </li>
-            <li class="nav-header">Data Transaksi</li>
+            <li class="nav-header text-blue-600 font-medium">Data Transaksi</li>
             <li class="nav-item">
                 <a href="{{ url('/stok') }}" class="nav-link {{ $activeMenu == 'stok' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-cubes"></i>
@@ -59,21 +59,25 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/barang') }}"
+                <a href="{{ url('/penjualan') }}"
                     class="nav-link {{ $activeMenu == 'penjualan' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-cash-register"></i>
                     <p>Transaksi Penjualan</p>
                 </a>
             </li>
+            <a href="{{ route('logout') }}" class=" mt-10 btn btn-sm btn-danger rounded-full" onclick="event.preventDefault(); if(confirm('Apakah Anda yakin ingin logout?')) { window.location.href = this.href; }">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
         </ul>
     </nav>
 </div>
 <style>
     .nav-sidebar .nav-link.active {
-    border-left: 4px solid #007bff; /* Bootstrap primary blue */
+    border: 1.5px solid #007bff;
     background-color: transparent; /* or white if needed */
     color: #007bff; /* Optional: blue text to match */
     font-weight: 500;
+    border-radius: 40px; /* Optional: rounded corners */
 }
 
 .nav-sidebar .nav-link.active i {

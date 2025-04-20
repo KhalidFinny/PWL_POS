@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Import Data Barang</h5>
-                <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
@@ -18,6 +18,11 @@
                     <label>Pilih File</label>
                     <input type="file" name="file_barang" id="file_barang" class="form-control" required>
                     <small id="error-file_barang" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Supplier</label>
+                    <input type="text" name="supplier" id="supplier" class="form-control" required>
+                    <small id="error-supplier" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -35,6 +40,10 @@
                     required: true,
                     extension: "xlsx"
                 },
+                supplier: {
+                    required: true,
+                    minlength: 3
+                }
             },
             submitHandler: function(form) {
                 var formData = new FormData(form);

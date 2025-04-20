@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class StockController extends Controller
 {
@@ -63,7 +65,7 @@ class StockController extends Controller
         return $stock->supplier ? $stock->supplier->supplier_nama : '-';
     })
     ->addColumn('user_id', function ($stock) {
-        return $stock->user ? $stock->user->name : '-';
+        return $stock->user ? $stock->user->nama : '-';
     })
     ->addColumn('aksi', function ($stock) {
         $id = preg_replace('/[^0-9]/', '', $stock->stok_id); // Clean ID
@@ -95,14 +97,27 @@ class StockController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Stock incremented successfully',
+            'message' => 'Berhasil menambah stok',
         ]);
     }
 
     public function confirm_ajax(string $id)
     {
         $stok = StockModel::find($id);
-        return view('stock.delete_ajax', compact('stok')); // Ensure the correct folder name
+        if (!$stok) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Stok tidak ditemukan'
+            ], 404);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Konfirmasi hapus stok',
+            'data' => [
+                'stok_id' => $stok->stok_id,
+                'delete_url' => url('/stok/' . $stok->stok_id)
+            ]
+        ]);
     }
 
     public function destroy(Request $request, string $id)
@@ -110,30 +125,39 @@ class StockController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             $stok = StockModel::find($id);
             if ($stok) {
+                // Example: Check if stock is referenced in another table (e.g., transactions)
+                $hasReferences = DB::table('t_stok')->where('stok_id', $id)->exists();
+                if ($hasReferences) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Data stok tidak dapat dihapus karena terkait dengan transaksi'
+                    ], 422);
+                }
                 try {
                     $stok->delete();
                     return response()->json([
                         'status' => true,
                         'message' => 'Data stok berhasil dihapus'
                     ]);
-                } catch (\Illuminate\Database\QueryException) { // Remove unused variable
+                } catch (\Illuminate\Database\QueryException $e) {
+                    Log::error('Failed to delete stock ID ' . $id . ': ' . $e->getMessage());
                     return response()->json([
                         'status' => false,
                         'message' => 'Data stok gagal dihapus karena masih terkait dengan data lain'
-                    ]);
+                    ], 422);
                 }
             }
             return response()->json([
                 'status' => false,
                 'message' => 'Data stok tidak ditemukan'
-            ]);
+            ], 404);
         }
         return redirect('/');
     }
 
     public function import()
     {
-        return view('stok.import'); // Ensure the correct folder name
+        return view('stok.import');
     }
 
     public function import_ajax(Request $request)
@@ -238,6 +262,66 @@ class StockController extends Controller
         $writer->save('php://output');
         exit;
     }
+    public function listDeleted(Request $request)
+{
+    $deletedStocks = StockModel::onlyTrashed()
+        ->with(['barang', 'supplier', 'user'])
+        ->select('t_stok.*');
+
+    return DataTables::of($deletedStocks)
+        ->addIndexColumn()
+        ->addColumn('barang_nama', function ($stock) {
+            return $stock->barang->barang_nama ?? '-';
+        })
+        ->addColumn('supplier_nama', function ($stock) {
+            return $stock->supplier->supplier_nama ?? '-';
+        })
+        ->addColumn('user_nama', function ($stock) {
+            return $stock->user->nama ?? '-';
+        })
+        ->addColumn('aksi', function ($stock) {
+            return '<button onclick="restoreStock('.$stock->stok_id.')" class="btn btn-sm btn-success">
+                    <i class="fas fa-redo"></i> Restok
+                </button>';
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+}
+// Tambahkan method baru untuk menangani restok
+public function restock(Request $request)
+{
+    $request->validate([
+        'stok_id' => 'required|integer|exists:t_stok,stok_id',
+        'jumlah' => 'required|integer|min:1'
+    ]);
+
+    DB::beginTransaction();
+    try {
+        $stock = StockModel::withTrashed()->findOrFail($request->stok_id);
+
+        if ($stock->trashed()) {
+            $stock->restore();
+            $stock->stok_jumlah = $request->jumlah;
+        } else {
+            $stock->increment('stok_jumlah', $request->jumlah);
+        }
+
+        $stock->save();
+
+        DB::commit();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Stok berhasil ditambahkan'
+        ]);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'status' => false,
+            'message' => 'Gagal restok: ' . $e->getMessage()
+        ], 500);
+    }
+}
 
     public function export_pdf()
     {

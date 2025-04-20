@@ -14,6 +14,9 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PenjualanController;
+use App\Http\Controllers\PenjualanDetailController;
+use App\Http\Controllers\DashboardController;
 
 
 /*
@@ -38,6 +41,8 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::group(['prefix' => 'user'], function () {
         Route::middleware(['authorize:ADM'])->group(function () {
@@ -91,8 +96,6 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
             Route::get('/', [BarangController::class, 'index']);
             Route::post('/list', [BarangController::class, 'list']);
-            Route::get('/create', [BarangController::class, 'create']);
-            Route::post('/', [BarangController::class, 'store']);
             Route::get('/create_ajax', [BarangController::class, 'create_ajax']);
             Route::post('/store_ajax', [BarangController::class, 'store_ajax']);
             Route::get('/{id}', [BarangController::class, 'show']);
@@ -162,20 +165,47 @@ Route::middleware(['auth'])->group(function () {
     Route::group(['prefix' => 'stok'], function () {
         Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
             Route::get('/', [StockController::class, 'index']);
-            Route::post('/list', [StockController::class, 'list']);
-            Route::post('/increment', [StockController::class, 'increment']);
+            Route::post('/list', [StockController::class, 'list'])->name('stok.list');
+            Route::get('/listDelete', [StockController::class, 'listDeleted'])->name('stok.listDelete');
             Route::get('/{id}', [StockController::class, 'show']);
-            Route::get('/{id}/edit', [StockController::class, 'edit']);
-            Route::put('/{id}', [StockController::class, 'update']);
             Route::get('/{id}/show_ajax', [StockController::class, 'show_ajax']);
-            Route::get('/{id}/edit_ajax', [StockController::class, 'edit_ajax']);
-            Route::put('/{id}/update_ajax', [StockController::class, 'update_ajax']);
-            Route::get('/{id}/delete_ajax', [StockController::class, 'confirm_ajax']);
-            Route::delete('/{id}', [StockController::class, 'destroy']);
-            Route::get('/import', [StockController::class, 'import']);
-            Route::post('/import', [StockController::class, 'import_ajax']);
-            Route::get('/export_excel', [StockController::class, 'export_excel']);
-            Route::get('/export_pdf', [StockController::class, 'export_pdf']);
+            Route::middleware(['authorize:ADM,MNG'])->group(function () {
+                Route::post('/increment', [StockController::class, 'increment']);
+                Route::get('/{id}/edit', [StockController::class, 'edit']);
+                Route::put('/{id}', [StockController::class, 'update']);
+                Route::get('/{id}/edit_ajax', [StockController::class, 'edit_ajax']);
+                Route::put('/{id}/update_ajax', [StockController::class, 'update_ajax']);
+                Route::get('/{id}/delete_ajax', [StockController::class, 'confirm_ajax']);
+                Route::delete('/{id}', [StockController::class, 'destroy']);
+                Route::get('/import', [StockController::class, 'import']);
+                Route::post('/import', [StockController::class, 'import_ajax']);
+                Route::get('/export_excel', [StockController::class, 'export_excel']);
+                Route::get('/export_pdf', [StockController::class, 'export_pdf']);
+                Route::post('/list-deleted', [StockController::class], 'listDeleted')->name('stok.deleted');
+                Route::post('/restock', [StockController::class, 'restock'])->name('stok.restock');
+            });
         });
     });
+
+    Route::group(['prefix' => 'penjualan'], function () {
+        Route::middleware(['authorize:ADM,MNG'])->group(function () {
+            Route::get('/', [PenjualanController::class, 'index']);
+            Route::post('/list', [PenjualanController::class, 'list']);
+            Route::get('/create_ajax', [PenjualanController::class, 'create_ajax']);
+            Route::post('/penjualan/store_ajax', [PenjualanController::class, 'store_ajax'])->name('penjualan.store_ajax');
+            Route::get('/{id}', [PenjualanController::class, 'show']);
+            Route::get('/{id}/edit', [PenjualanController::class, 'edit']);
+            Route::put('/{id}', [PenjualanController::class, 'update'])->name('penjualan.update_ajax');
+            Route::get('/{id}/delete_ajax', [PenjualanController::class, 'confirm_ajax']);
+            Route::delete('/{id}/delete_ajax', [PenjualanController::class, 'delete_ajax']);
+            Route::delete('/{id}', [PenjualanController::class, 'destroy']);
+            Route::get('/import', [PenjualanController::class, 'import']);
+            Route::post('/import_ajax', [PenjualanController::class, 'import_ajax']);
+            Route::get('/export_excel', [PenjualanController::class, 'export_excel']);
+            Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
+                Route::get('/{id}/show_ajax', [PenjualanController::class, 'show_ajax']);
+            Route::get('/export_pdf', [PenjualanController::class, 'exportToPdf']);
+        });
+    });
+});
 });

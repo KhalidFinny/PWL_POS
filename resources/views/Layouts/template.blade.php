@@ -6,8 +6,8 @@
   <title>{{ config('app.name', 'PWL Laravel Starter Code') }}</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Google Font: Urbanist -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;700&display=swap">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Datatables -->
@@ -18,9 +18,12 @@
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('AdminLTE/dist/css/adminlte.min.css') }}">
+<!-- Tailwind CSS -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   @stack('css')
+<link rel="stylesheet" href="{{ asset('style/modal.css') }}">
 
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->

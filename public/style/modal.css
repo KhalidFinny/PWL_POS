@@ -1,0 +1,215 @@
+/* Modern Swiss Modal Design with Blue Doodle Border */
+
+/* Modal backdrop */
+.modal-backdrop {
+    background-color: rgba(25, 55, 150, 0.15);
+    backdrop-filter: blur(4px);
+  }
+  
+  /* Main modal container */
+  .modal.fade.animate.shake .modal-dialog {
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-out;
+  }
+  
+  .modal.fade.animate.shake.show .modal-dialog {
+    transform: translateY(0);
+  }
+  
+  /* Modal dialog sizing and positioning */
+  .modal-dialog.modal-md {
+    max-width: 500px;
+    margin: 2rem auto;
+  }
+  
+  /* Modal content with doodle border */
+  .modal-content {
+    border: none;
+    border-radius: 12px;
+    background-color: #ffffff;
+    overflow: hidden;
+    position: relative;
+    box-shadow: none;
+  }
+  
+  /* Blue doodle border effect */
+  .modal-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #1F46E8;
+    border-radius: 12px;
+    pointer-events: none;
+    background-image: 
+      radial-gradient(circle at 10% 10%, transparent 1px, #1F46E8 1px, #1F46E8 2px, transparent 2px),
+      radial-gradient(circle at 90% 15%, transparent 1px, #1F46E8 1px, #1F46E8 2px, transparent 2px),
+      radial-gradient(circle at 15% 90%, transparent 1px, #1F46E8 1px, #1F46E8 2px, transparent 2px),
+      radial-gradient(circle at 85% 85%, transparent 1px, #1F46E8 1px, #1F46E8 2px, transparent 2px),
+      radial-gradient(circle at 50% 50%, transparent 1px, #1F46E8 1px, #1F46E8 2px, transparent 2px);
+    background-size: 
+      100px 100px,
+      120px 100px,
+      100px 120px,
+      110px 110px,
+      50px 50px;
+    background-position: 
+      0 0, 
+      100% 0, 
+      0 100%, 
+      100% 100%,
+      50% 50%;
+    background-repeat: no-repeat;
+  }
+  
+  /* Modal header styling */
+  .modal-header {
+    border-bottom: 2px solid #E0E7FF;
+    padding: 1.5rem 1.5rem 1rem;
+    background-color: #ffffff;
+  }
+  
+  .modal-title {
+    font-family: 'Urbanist', 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #1F46E8;
+    margin: 0;
+    line-height: 1.2;
+  }
+  
+  /* Close button styling */
+  .modal-header .close {
+    padding: 0.5rem;
+    margin: -0.5rem -0.5rem -0.5rem auto;
+    font-size: 1.5rem;
+    background-color: #F0F4FF;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: background-color 0.2s ease;
+    border: none;
+    color: #1F46E8;
+    outline: none;
+  }
+  
+  .modal-header .close span {
+    line-height: 0.5;
+  }
+  
+  .modal-header .close:hover {
+    background-color: #E0E7FF;
+    color: #1F46E8;
+  }
+  
+  /* Modal body styling */
+  .modal-body {
+    padding: 1.5rem;
+    font-family: 'Urbanist', 'Inter', sans-serif;
+  }
+  
+  /* Form styling */
+  #form-increment-stok label {
+    font-family: 'Urbanist', 'Inter', sans-serif;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  #form-increment-stok .form-control {
+    border: 2px solid #E0E7FF;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-family: 'Urbanist', 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  #form-increment-stok .form-control:focus {
+    border-color: #1F46E8;
+    box-shadow: none;
+    outline: none;
+  }
+  
+  #form-increment-stok .form-text {
+    font-family: 'Urbanist', 'Inter', sans-serif;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+  
+  #form-increment-stok .error-text {
+    font-weight: 500;
+  }
+  
+  /* Modal footer styling */
+  .modal-footer {
+    border-top: 2px solid #E0E7FF;
+    padding: 1rem 1.5rem 1.5rem;
+    justify-content: space-between;
+  }
+  
+  /* Button styling */
+  .modal-footer .btn {
+    font-family: 'Urbanist', 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  /* Primary button (Simpan) */
+  .modal-footer .btn-primary {
+    background-color: #1F46E8;
+    color: #FFFFFF;
+    border: 2px solid #1F46E8;
+  }
+  
+  .modal-footer .btn-primary:hover,
+  .modal-footer .btn-primary:focus {
+    background-color: #1737B3;
+    border-color: #1737B3;
+    box-shadow: none;
+  }
+  
+  /* Warning button (Batal) */
+  .modal-footer .btn-warning {
+    background-color: #FFFFFF;
+    color: #1F46E8;
+    border: 2px solid #E0E7FF;
+  }
+  
+  .modal-footer .btn-warning:hover,
+  .modal-footer .btn-warning:focus {
+    background-color: #F0F4FF;
+    color: #1F46E8;
+    border-color: #E0E7FF;
+    box-shadow: none;
+  }
+  
+  /* Animation effect */
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+  }
+  
+  .modal.show.animate.shake .modal-dialog {
+    animation: shake 0.5s ease-in-out;
+  }
+  
+  /* Make sure the Urbanist font is imported */
+  @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap');

@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Models\BarangModel;
 use App\Models\StockModel;
 use App\Models\UserModel;
-use App\Models\SupplierModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,35 +26,44 @@ class CreateInitialStockJob implements ShouldQueue
     public function handle()
     {
         try {
-            $barang = BarangModel::find($this->barangId);
+            $barang = BarangModel::with('supplier')->find($this->barangId);
+
             if (!$barang) {
                 Log::warning("Barang not found for stock creation: barang_id={$this->barangId}");
                 return;
             }
 
-            $defaultUser = UserModel::find(1); // Adjust to your default user_id
+            $defaultUser = UserModel::first();
+
             if (!$defaultUser) {
-                Log::warning("Default user not found for stock creation: user_id=1");
+                Log::warning("No users found in database for stock creation");
                 return;
             }
 
-            $latestSupplier = SupplierModel::orderBy('supplier_id', 'desc')->first();
-            if (!$latestSupplier) {
-                Log::warning("No suppliers found for stock creation: barang_id={$this->barangId}");
+            if (!$barang->supplier_id) {
+                Log::warning("Barang has no supplier assigned: barang_id={$this->barangId}");
                 return;
             }
 
             StockModel::create([
                 'barang_id' => $barang->barang_id,
-                'supplier_id' => $latestSupplier->supplier_id,
+                'supplier_id' => $barang->supplier_id,
                 'user_id' => $defaultUser->user_id,
-                'stok_tanggal' => now()->format('Y-m-d'),
-                'stok_jumlah' => 0
+                'stok_tanggal' => now()->format('Y-m-d H:i:s'),
+                'stok_jumlah' => 1
             ]);
 
-            Log::info("Initial stock created for barang_id={$this->barangId} with supplier_id={$latestSupplier->supplier_id}");
+            Log::info("Initial stock created successfully", [
+                'barang_id' => $this->barangId,
+                'supplier_id' => $barang->supplier_id
+            ]);
+
         } catch (\Exception $e) {
-            Log::error("Failed to create initial stock for barang_id={$this->barangId}: {$e->getMessage()}");
+            Log::error("Failed to create initial stock", [
+                'barang_id' => $this->barangId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
         }
     }
 }

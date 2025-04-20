@@ -99,6 +99,7 @@
                 <th class="text-right">Harga Beli</th>
                 <th class="text-right">Harga Jual</th>
                 <th>Kategori</th>
+                <th>Supplier</th>
             </tr>
         </thead>
         <tbody>
@@ -110,8 +111,9 @@
                 <td class="text-right">{{ number_format($b->harga_beli, 0, ',', '.') }}</td>
                 <td class="text-right">{{ number_format($b->harga_jual, 0, ',', '.') }}</td>
                 <td>{{ $b->kategori ? $b->kategori->kategori_nama : '-' }}</td>
+                <td>{{ $b->supplier ? $b->supplier->supplier_nama : '-' }}</td>
             </tr>
-        @endforeach
+            @endforeach
         </tbody>
     </table>
 </body>

@@ -4,8 +4,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Data Barang</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -17,6 +18,16 @@
                         @endforeach
                     </select>
                     <small id="error-kategori_id" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Supplier</label>
+                    <select name="supplier_id" id="supplier_id" class="form-control" required>
+                        <option value="">- Pilih Supplier -</option>
+                        @foreach ($supplier as $item)
+                            <option value="{{ $item->supplier_id }}">{{ $item->supplier_nama }}</option>
+                        @endforeach
+                    </select>
+                    <small id="error-supplier_id" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Kode Barang</label>
@@ -50,56 +61,62 @@
     $(document).ready(function() {
         $("#form-tambah").validate({
             rules: {
-                kategori_id: {
-                    required: true,
-                    number: true
-                },
+                kategori_id: { required: true, number: true },
+                supplier_id: { required: true, number: true },
+                brang_kode: { required: true, minlength: 3, maxlength: 20 },
+                barang_nama: { required: true, minlength: 3, maxlength: 100 },
+                harga_beli: { required: true, number: true, min: 0 },
+                harga_jual: { required: true, number: true, min: 0 }
+            },
+            messages: {
                 brang_kode: {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 20
+                    required: "Kode barang wajib diisi",
+                    minlength: "Kode barang minimal 3 karakter"
                 },
-                barang_nama: {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 100
-                },
-                harga_beli: {
-                    required: true,
-                    number: true,
-                    min: 0
-                },
-                harga_jual: {
-                    required: true,
-                    number: true,
-                    min: 0
-                }
+                // Add other custom messages as needed
             },
             submitHandler: function(form) {
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
+                    dataType: 'json',
                     success: function(response) {
-                        if (response.status) {
+                        if(response.status === true) {
                             $('#myModal').modal('hide');
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            dataBarang.ajax.reload();
+                            // Reload DataTable if exists
+                            if(typeof dataBarang !== 'undefined') {
+                                dataBarang.ajax.reload(null, false);
+                            }
                         } else {
+                            // Clear previous errors
                             $('.error-text').text('');
-                            $.each(response.msgField, function(prefix, val) {
-                                $('#error-' + prefix).text(val[0]);
-                            });
+
+                            // Show new errors
+                            if(response.msgField) {
+                                $.each(response.msgField, function(field, errors) {
+                                    $('#error-' + field).text(errors[0]);
+                                });
+                            }
+
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Terjadi Kesalahan',
-                                text: response.message
+                                title: 'Gagal',
+                                text: response.message || 'Terjadi kesalahan validasi'
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Terjadi kesalahan pada server: ' + xhr.statusText
+                        });
                     }
                 });
                 return false;
