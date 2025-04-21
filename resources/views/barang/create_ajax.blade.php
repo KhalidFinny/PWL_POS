@@ -73,7 +73,6 @@
                     required: "Kode barang wajib diisi",
                     minlength: "Kode barang minimal 3 karakter"
                 },
-                // Add other custom messages as needed
             },
             submitHandler: function(form) {
                 $.ajax({
@@ -89,15 +88,11 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            // Reload DataTable if exists
-                            if(typeof dataBarang !== 'undefined') {
-                                dataBarang.ajax.reload(null, false);
+                            if(typeof tableBarang !== 'undefined') {
+                                tableBarang.ajax.reload(null, false);
                             }
                         } else {
-                            // Clear previous errors
                             $('.error-text').text('');
-
-                            // Show new errors
                             if(response.msgField) {
                                 $.each(response.msgField, function(field, errors) {
                                     $('#error-' + field).text(errors[0]);

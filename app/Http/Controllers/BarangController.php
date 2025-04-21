@@ -188,21 +188,10 @@ class BarangController extends Controller
                 'message' => 'Data barang tidak ditemukan'
             ], 404);
         }
-
-        // Wrap deletion in a transaction to ensure data integrity
         DB::beginTransaction();
-
-        // Option 1: Force delete related stok records (permanently remove)
         StockModel::where('barang_id', $id)->forceDelete();
-
-        // Option 2: Soft delete related stok records (mark as deleted)
-        // StockModel::where('barang_id', $id)->delete();
-
-        // Delete the barang record
         $barang->delete();
-
         DB::commit();
-
         return response()->json([
             'status' => true,
             'message' => 'Data barang dan stok terkait berhasil dihapus'

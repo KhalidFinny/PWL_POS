@@ -189,7 +189,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::group(['prefix' => 'penjualan'], function () {
         Route::middleware(['authorize:ADM,MNG'])->group(function () {
-            Route::get('/', [PenjualanController::class, 'index']);
+            Route::get('/', [PenjualanController::class, 'index'])->name('penjualan.index');
             Route::post('/list', [PenjualanController::class, 'list']);
             Route::get('/create_ajax', [PenjualanController::class, 'create_ajax']);
             Route::post('/penjualan/store_ajax', [PenjualanController::class, 'store_ajax'])->name('penjualan.store_ajax');
@@ -204,8 +204,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/export_excel', [PenjualanController::class, 'export_excel']);
             Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
                 Route::get('/{id}/show_ajax', [PenjualanController::class, 'show_ajax']);
-            Route::get('/export_pdf', [PenjualanController::class, 'exportToPdf']);
+            Route::get('/export_pdf', [PenjualanController::class, 'export_Pdf']) ->name('penjualan.pdf');
+            });
         });
     });
-});
 });

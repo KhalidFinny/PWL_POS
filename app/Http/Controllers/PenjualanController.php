@@ -300,12 +300,18 @@ class PenjualanController extends Controller
             ], 500);
         }
     }
-
-
-    public function exportToPdf($id)
+    public function export_pdf()
     {
-        $penjualan = PenjualanModel::with('details.barang', 'user')->findOrFail($id);
-        $pdf = Pdf::loadView('penjualan.pdf', compact('penjualan'));
-        return $pdf->download('penjualan-' . $penjualan->penjualan_kode . '.pdf');
+        $penjualan = DetailPenjualanModel::select('penjualan_id', 'barang_id', 'harga', 'jumlah')
+            ->orderBy('penjualan_id')
+            ->with('penjualan', 'barang')
+            ->get();
+
+        $pdf = Pdf::loadView('penjualan.pdf', ['penjualan' => $penjualan]);
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption("isRemoteEnbled", true);
+        $pdf->render();
+
+        return $pdf->stream('Data Barang'.date('Y-m-d').'.pdf');
     }
 }
