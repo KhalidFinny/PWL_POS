@@ -1,14 +1,20 @@
+<!-- Form untuk menambah data barang melalui AJAX -->
 <form action="{{ url('/barang/store_ajax') }}" method="POST" id="form-tambah">
+    <!-- Token CSRF untuk keamanan -->
     @csrf
+    <!-- Modal dialog untuk form tambah barang -->
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
+            <!-- Header modal -->
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Data Barang</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
+            <!-- Body modal berisi input form -->
             <div class="modal-body">
+                <!-- Input untuk memilih kategori -->
                 <div class="form-group">
                     <label>Kategori</label>
                     <select name="kategori_id" id="kategori_id" class="form-control" required>
@@ -19,6 +25,7 @@
                     </select>
                     <small id="error-kategori_id" class="error-text form-text text-danger"></small>
                 </div>
+                <!-- Input untuk memilih supplier -->
                 <div class="form-group">
                     <label>Supplier</label>
                     <select name="supplier_id" id="supplier_id" class="form-control" required>
@@ -29,27 +36,32 @@
                     </select>
                     <small id="error-supplier_id" class="error-text form-text text-danger"></small>
                 </div>
+                <!-- Input untuk kode barang -->
                 <div class="form-group">
                     <label>Kode Barang</label>
                     <input value="" type="text" name="brang_kode" id="brang_kode" class="form-control" required>
                     <small id="error-brang_kode" class="error-text form-text text-danger"></small>
                 </div>
+                <!-- Input untuk nama barang -->
                 <div class="form-group">
                     <label>Nama Barang</label>
                     <input value="" type="text" name="barang_nama" id="barang_nama" class="form-control" required>
                     <small id="error-barang_nama" class="error-text form-text text-danger"></small>
                 </div>
+                <!-- Input untuk harga beli -->
                 <div class="form-group">
                     <label>Harga Beli</label>
                     <input value="" type="number" step="0.01" name="harga_beli" id="harga_beli" class="form-control" required>
                     <small id="error-harga_beli" class="error-text form-text text-danger"></small>
                 </div>
+                <!-- Input untuk harga jual -->
                 <div class="form-group">
                     <label>Harga Jual</label>
                     <input value="" type="number" step="0.01" name="harga_jual" id="harga_jual" class="form-control" required>
                     <small id="error-harga_jual" class="error-text form-text text-danger"></small>
                 </div>
             </div>
+            <!-- Footer modal dengan tombol aksi -->
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
@@ -57,9 +69,13 @@
         </div>
     </div>
 </form>
+
+<!-- Script untuk validasi form dan pengiriman data via AJAX -->
 <script>
     $(document).ready(function() {
+        // Menginisialisasi validasi form menggunakan jQuery Validate
         $("#form-tambah").validate({
+            // Aturan validasi untuk setiap input
             rules: {
                 kategori_id: { required: true, number: true },
                 supplier_id: { required: true, number: true },
@@ -68,37 +84,44 @@
                 harga_beli: { required: true, number: true, min: 0 },
                 harga_jual: { required: true, number: true, min: 0 }
             },
+            // Pesan error khusus untuk beberapa input
             messages: {
                 brang_kode: {
                     required: "Kode barang wajib diisi",
                     minlength: "Kode barang minimal 3 karakter"
                 },
             },
+            // Fungsi yang dijalankan saat form valid dan disubmit
             submitHandler: function(form) {
+                // Mengirim data form via AJAX
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
                     dataType: 'json',
                     success: function(response) {
+                        // Jika penyimpanan berhasil
                         if(response.status === true) {
-                            $('#myModal').modal('hide');
+                            $('#myModal').modal('hide'); // Menutup modal
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
                                 text: response.message
                             });
+                            // Memperbarui tabel DataTable jika ada
                             if(typeof tableBarang !== 'undefined') {
                                 tableBarang.ajax.reload(null, false);
                             }
                         } else {
+                            // Menghapus pesan error sebelumnya
                             $('.error-text').text('');
+                            // Menampilkan pesan error per field
                             if(response.msgField) {
                                 $.each(response.msgField, function(field, errors) {
                                     $('#error-' + field).text(errors[0]);
                                 });
                             }
-
+                            // Menampilkan notifikasi error
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Gagal',
@@ -107,6 +130,7 @@
                         }
                     },
                     error: function(xhr) {
+                        // Menangani error server
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -114,16 +138,19 @@
                         });
                     }
                 });
-                return false;
+                return false; // Mencegah submit form default
             },
+            // Konfigurasi penempatan pesan error
             errorElement: 'span',
             errorPlacement: function(error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
+            // Menandai input yang tidak valid
             highlight: function(element, errorClass, validClass) {
                 $(element).addClass('is-invalid');
             },
+            // Menghapus tanda input tidak valid
             unhighlight: function(element, errorClass, validClass) {
                 $(element).removeClass('is-invalid');
             }
