@@ -33,6 +33,7 @@ use App\Http\Controllers\DashboardController;
 Route::pattern('id', '[0-9]+');
 
 // Rute untuk registrasi
+// Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/register', [AuthController::class, 'postregister']); // Menangani submit form registrasi
 
