@@ -12,36 +12,31 @@ class RegisterController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $validator = validator::make($request->all(), [
-            'username' => 'required|string|max:255|unique:m_user',
-            'password' => 'required|string|min:8|confirmed',
-            'nama' => 'required|string|max:255',
-            'level_id' => 'required|integer|exists:m_level,level_id',
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'nama' => 'required',
+            'password' => 'required|min:5|confirmed',
+            'level_id' => 'required',
+            'image' => 'required'
         ]);
-
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation Error',
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json($validator->errors(), 422);
         }
-
         $user = UserModel::create([
             'username' => $request->username,
-            'password' => bcrypt($request->password),
             'nama' => $request->nama,
+            'password' => bcrypt($request->password),
             'level_id' => $request->level_id,
+            'image' => $request->image->hashName(),
         ]);
-        if($user){
+        if ($user) {
             return response()->json([
-                'sucess' => true,
+                'success' => true,
                 'user' => $user,
             ], 201);
         }
         return response()->json([
             'success' => false,
-            'message' => 'Registration failed',
         ], 409);
     }
 }

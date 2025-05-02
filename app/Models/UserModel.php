@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Model;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class UserModel extends Authenticatable implements JWTSubject
 {
@@ -14,45 +13,31 @@ class UserModel extends Authenticatable implements JWTSubject
     {
         return $this->getKey();
     }
-
     public function getJWTCustomClaims()
     {
         return [];
     }
-
-    use HasFactory;
-
     protected $table = 'm_user';
     protected $primaryKey = 'user_id';
-    protected $fillable = ['level_id', 'username', 'nama', 'password'];
-    protected $hidden = ['password'];
-    protected $casts = [];
-
+    protected $fillable = [
+        'username',
+        'nama',
+        'password',
+        'level_id',
+        'image' 
+    ];
     public function level()
     {
-        return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
+        return $this->belongsTo(
+            LevelModel::class,
+            'level_id',
+            'level_id'
+        );
     }
-
-    // public function getAuthIdentifierName()
-    // {
-    //     return 'username';
-    // }
-
-    public function hasRole($role): bool
+    protected function image(): Attribute
     {
-        return $this->level->level_kode == $role;
+        return Attribute::make(
+            get: fn($image) => url('/storage/posts/' . $image),
+        );
     }
-
-    public function getRole()
-    {
-        return $this->level->level_kode;
-    }
-
-    public function getProfilePictureUrl()
-    {
-        $url = $this->profile_picture ? Storage::url($this->profile_picture) : asset('defualt.png');
-        Log::info('Generated Profile Picture URL for user ' . $this->user_id . ': ' . $url);
-        return $url;
-    }
-
 }
