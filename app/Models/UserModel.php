@@ -24,19 +24,19 @@ class UserModel extends Authenticatable implements JWTSubject
 
     protected $table = 'm_user';
     protected $primaryKey = 'user_id';
-    protected $fillable = ['level_id', 'username', 'nama', 'password', 'profile_picture'];
+    protected $fillable = ['level_id', 'username', 'nama', 'password'];
     protected $hidden = ['password'];
-    protected $casts = ['password' => 'hashed'];
+    protected $casts = [];
 
     public function level()
     {
         return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
     }
 
-    public function getAuthIdentifierName()
-    {
-        return 'username';
-    }
+    // public function getAuthIdentifierName()
+    // {
+    //     return 'username';
+    // }
 
     public function hasRole($role): bool
     {
