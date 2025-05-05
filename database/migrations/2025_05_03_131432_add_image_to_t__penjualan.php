@@ -6,21 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::table('m_user', function (Blueprint $table) {
-            $table->string('image')->nullable()->after('profile_picture');
+        Schema::table('t_penjualan', function (Blueprint $table) {
+            $table->string('image')->nullable()->after('penjualan_tanggal');
         });
     }
-    /**
-     * Reverse the migrations.
-     */
+
     public function down(): void
     {
-        Schema::table('m_user', function (Blueprint $table) {
+        Schema::table('t_penjualan', function (Blueprint $table) {
             $table->dropColumn('image');
         });
     }

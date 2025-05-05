@@ -70,7 +70,8 @@ class DashboardController extends Controller
                 'm_barang.harga_beli',
                 'm_barang.harga_jual',
                 'm_barang.created_at',
-                'm_barang.updated_at'
+                'm_barang.updated_at',
+                'm_barang.image'
             )
             ->orderBy('total_stock', 'desc')
             ->take(5)

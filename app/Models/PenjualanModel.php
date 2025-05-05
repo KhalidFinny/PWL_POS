@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Database\Eloquent\Casts\Attribute;
 class PenjualanModel extends Model
 {
     // Menggunakan trait untuk factory dan soft delete
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     // Menentukan nama tabel yang digunakan oleh model
     protected $table = 't_penjualan';
@@ -18,10 +17,15 @@ class PenjualanModel extends Model
     protected $primaryKey = 'penjualan_id';
 
     // Kolom yang dapat diisi secara massal (mass assignable)
-    protected $fillable = ['user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal'];
+    protected $fillable = ['user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal','image',];
 
     // Kolom yang akan dikonversi menjadi instance Carbon untuk manipulasi tanggal
     protected $dates = ['deleted_at'];
+
+    // Menentukan nilai default untuk kolom user_id
+    protected $attributes = [
+        'user_id' => 1,
+    ];
 
     /**
      * Mendefinisikan relasi ke model UserModel.
@@ -42,4 +46,11 @@ class PenjualanModel extends Model
     {
         return $this->hasMany(DetailPenjualanModel::class, 'penjualan_id');
     }
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($image) => $image ? url('/penjualan/' . $image) : null,
+        );
+    }
+
 }

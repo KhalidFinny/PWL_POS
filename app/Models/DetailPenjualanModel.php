@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 
 class DetailPenjualanModel extends Model
 {
@@ -17,7 +19,7 @@ class DetailPenjualanModel extends Model
     protected $primaryKey = 'penjualan_detail_id';
 
     // Kolom yang dapat diisi secara massal (mass assignable)
-    protected $fillable = ['penjualan_id', 'barang_id', 'harga', 'jumlah'];
+    protected $fillable = ['penjualan_id', 'barang_id', 'harga', 'jumlah','image',];
 
     /**
      * Mendefinisikan relasi ke model PenjualanModel.
@@ -37,5 +39,11 @@ class DetailPenjualanModel extends Model
     public function barang()
     {
         return $this->belongsTo(BarangModel::class, 'barang_id');
+    }
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($image) => $image ? url('/penjualan/' . $image) : null,
+        );
     }
 }

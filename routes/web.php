@@ -54,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Grup rute untuk pengelolaan pengguna, hanya untuk admin (ADM)
     Route::group(['prefix' => 'user'], function () {
-        Route::middleware(['authorize:ADM'])->group(function () {
+        // Route::middleware(['authorize:ADM'])->group(function () {
             Route::get('/', [UserKontroller::class, 'index']); // Menampilkan daftar pengguna
             Route::post('/list', [UserKontroller::class, 'list']); // Mengambil data pengguna untuk DataTable
             Route::get('/create', [UserKontroller::class, 'create']); // Menampilkan form tambah pengguna
@@ -79,7 +79,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Grup rute untuk pengelolaan level, hanya untuk admin (ADM)
     Route::group(['prefix' => 'level'], function () {
-        Route::middleware(['authorize:ADM'])->group(function () {
+        // Route::middleware(['authorize:ADM'])->group(function () {
             Route::get('/', [LevelController::class, 'index']); // Menampilkan daftar level
             Route::post('/list', [LevelController::class, 'list']); // Mengambil data level untuk DataTable
             Route::get('/create', [LevelController::class, 'create']); // Menampilkan form tambah level
@@ -100,11 +100,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/export_excel', [LevelController::class, 'export_excel']); // Mengekspor level ke Excel
             Route::get('/export_pdf', [LevelController::class, 'export_pdf']); // Mengekspor level ke PDF
         });
-    });
+    // });
 
     // Grup rute untuk pengelolaan barang, akses untuk ADM, MNG, STF, CUS
     Route::group(['prefix' => 'barang'], function () {
-        Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
+        // Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
             Route::get('/', [BarangController::class, 'index']); // Menampilkan daftar barang
             Route::post('/list', [BarangController::class, 'list']); // Mengambil data barang untuk DataTable
             Route::get('/create_ajax', [BarangController::class, 'create_ajax']); // Form tambah barang via AJAX
@@ -123,11 +123,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/export_excel', [BarangController::class, 'export_excel']); // Mengekspor barang ke Excel
             Route::get('/export_pdf', [BarangController::class, 'export_pdf']); // Mengekspor barang ke PDF
         });
-    });
+    // });
 
     // Grup rute untuk pengelolaan kategori, akses untuk ADM, MNG, STF
     Route::group(['prefix' => 'kategori'], function () {
-        Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
+        // Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
             Route::get('/', [KategoriController::class, 'index']); // Menampilkan daftar kategori
             Route::post('/list', [KategoriController::class, 'list']); // Mengambil data kategori untuk DataTable
             Route::get('/create', [KategoriController::class, 'create']); // Menampilkan form tambah kategori
@@ -148,11 +148,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/export_excel', [KategoriController::class, 'export_excel']); // Mengekspor kategori ke Excel
             Route::get('/export_pdf', [KategoriController::class, 'export_pdf']); // Mengekspor kategori ke PDF
         });
-    });
+    // });
 
     // Grup rute untuk pengelolaan supplier, akses untuk ADM, MNG, STF
     Route::group(['prefix' => 'supplier'], function () {
-        Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
+        // Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
             Route::get('/', [SupplierController::class, 'index']); // Menampilkan daftar supplier
             Route::post('/list', [SupplierController::class, 'list']); // Mengambil data supplier untuk DataTable
             Route::get('/create', [SupplierController::class, 'create']); // Menampilkan form tambah supplier
@@ -173,11 +173,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/export_excel', [SupplierController::class, 'export_excel']); // Mengekspor supplier ke Excel
             Route::get('/export_pdf', [SupplierController::class, 'export_pdf']); // Mengekspor supplier ke PDF
         });
-    });
+    // });
 
     // Grup rute untuk pengelolaan stok, akses untuk ADM, MNG, STF, CUS
     Route::group(['prefix' => 'stok'], function () {
-        Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
+        // Route::middleware(['authorize:ADM,MNG,STF,CUS'])->group(function () {
             Route::get('/', [StockController::class, 'index']); // Menampilkan daftar stok
             Route::post('/list', [StockController::class, 'list'])->name('stok.list'); // Mengambil data stok untuk DataTable
             Route::get('/listDelete', [StockController::class, 'listDeleted'])->name('stok.listDelete'); // Menampilkan stok yang dihapus
@@ -185,7 +185,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{id}/show_ajax', [StockController::class, 'show_ajax']); // Detail stok via AJAX
 
             // Sub-grup rute untuk aksi yang hanya dapat dilakukan oleh ADM dan MNG
-            Route::middleware(['authorize:ADM,MNG'])->group(function () {
+            // Route::middleware(['authorize:ADM,MNG'])->group(function () {
                 Route::post('/increment', [StockController::class, 'increment']); // Menambah jumlah stok
                 Route::get('/{id}/edit', [StockController::class, 'edit']); // Menampilkan form edit stok
                 Route::put('/{id}', [StockController::class, 'update']); // Memperbarui stok
@@ -199,13 +199,13 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/export_pdf', [StockController::class, 'export_pdf']); // Mengekspor stok ke PDF
                 Route::post('/list-deleted', [StockController::class, 'listDeleted'])->name('stok.deleted'); // Mengambil data stok yang dihapus
                 Route::post('/restock', [StockController::class, 'restock'])->name('stok.restock'); // Merestok barang
-            });
+            // });
         });
-    });
+    // });
 
     // Grup rute untuk pengelolaan penjualan, akses untuk ADM dan MNG
     Route::group(['prefix' => 'penjualan'], function () {
-        Route::middleware(['authorize:ADM,MNG'])->group(function () {
+        // Route::middleware(['authorize:ADM,MNG'])->group(function () {
             Route::get('/', [PenjualanController::class, 'index'])->name('penjualan.index'); // Menampilkan daftar penjualan
             Route::post('/list', [PenjualanController::class, 'list']); // Mengambil data penjualan untuk DataTable
             Route::get('/create_ajax', [PenjualanController::class, 'create_ajax']); // Form tambah penjualan via AJAX
@@ -224,7 +224,7 @@ Route::middleware(['auth'])->group(function () {
             Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
                 Route::get('/{id}/show_ajax', [PenjualanController::class, 'show_ajax']); // Detail penjualan via AJAX
                 Route::get('/export_pdf', [PenjualanController::class, 'export_Pdf'])->name('penjualan.pdf'); // Mengekspor penjualan ke PDF
-            });
+            // });
         });
     });
-});
+// });

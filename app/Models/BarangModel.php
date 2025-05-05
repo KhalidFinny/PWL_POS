@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Casts\Attribute;
 class BarangModel extends Model
 {
     // Menggunakan trait untuk factory
@@ -17,7 +17,7 @@ class BarangModel extends Model
     protected $primaryKey = 'barang_id';
 
     // Kolom yang dapat diisi secara massal (mass assignable)
-    protected $fillable = ['kategori_id', 'supplier_id', 'brang_kode', 'barang_nama', 'harga_beli', 'harga_jual'];
+    protected $fillable = ['kategori_id', 'supplier_id', 'brang_kode', 'barang_nama', 'harga_beli', 'harga_jual','image',];
 
     /**
      * Mendefinisikan relasi ke model KategoriModel.
@@ -47,5 +47,11 @@ class BarangModel extends Model
     public function stok()
     {
         return $this->hasMany(StockModel::class, 'barang_id', 'barang_id');
+    }
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($image) => $image ? url('/storage/barang/' . $image) : null,
+        );
     }
 }

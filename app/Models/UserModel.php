@@ -24,7 +24,8 @@ class UserModel extends Authenticatable implements JWTSubject
         'nama',
         'password',
         'level_id',
-        'image' 
+        'profile_picture',
+        'image'
     ];
     public function level()
     {
@@ -37,7 +38,7 @@ class UserModel extends Authenticatable implements JWTSubject
     protected function image(): Attribute
     {
         return Attribute::make(
-            get: fn($image) => url('/storage/posts/' . $image),
+            get: fn($image) => $image ? url('/storage/posts/' . $image) : null,
         );
     }
 }
